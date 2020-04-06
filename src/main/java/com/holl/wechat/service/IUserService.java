@@ -8,4 +8,6 @@ public interface IUserService {
 
     List<User> findAll();
 
+    User findById(String id);
+
 }

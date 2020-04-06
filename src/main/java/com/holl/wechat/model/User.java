@@ -3,7 +3,6 @@ package com.holl.wechat.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 @Entity(name = "users")
 public class User {
@@ -12,16 +11,20 @@ public class User {
     @Column(nullable = false)
     private String id;
 
+    @Column(nullable = false)
+    private String unionId;
+
     @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)
-    Long credit;
+    private Long credit;
 
     public User(){ }
 
-    public User(String id, String name, Long credit) {
+    public User(String id, String unionId, String name, Long credit) {
         this.id = id;
+        this.unionId = unionId;
         this.name = name;
         this.credit = credit;
     }
@@ -32,6 +35,14 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
     }
 
     public String getName() {

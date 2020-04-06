@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Entity;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -18,5 +19,15 @@ public class UserServiceImpl implements IUserService {
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User findById(String id) {
+        Optional<User> tmp = userRepository.findById(id);
+        if (!tmp.isPresent()) {
+            return tmp.get();
+        } else {
+            return null;
+        }
     }
 }

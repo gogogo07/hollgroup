@@ -4,6 +4,7 @@ import com.holl.wechat.model.User;
 import com.holl.wechat.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -17,9 +18,9 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @RequestMapping("hello")
-    public String Hello() {
-        return "hello";
+    @RequestMapping("login")
+    public String login(@RequestParam(name = "code", defaultValue = " ") String code) {
+        return null;
     }
 
     @RequestMapping("/findALL")
