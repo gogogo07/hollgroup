@@ -10,4 +10,6 @@ public interface IUserService {
 
     User findById(String id);
 
+    User insertByUser(User user);
+
 }

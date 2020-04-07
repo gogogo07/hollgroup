@@ -11,22 +11,40 @@ public class User {
     @Column(nullable = false)
     private String id;
 
-    @Column(nullable = false)
+    @Column()
     private String unionId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private Long credit;
+
+    private Integer gender;
+
+    private String language;
+
+    private String city;
+
+    private String province;
+
+    private String country;
+
+    private String avatarUrl;
 
     public User(){ }
 
-    public User(String id, String unionId, String name, Long credit) {
+    public User(String id, String unionId, String name, Long credit, Integer gender, String language,
+                String city, String province, String country, String avatarUrl) {
         this.id = id;
         this.unionId = unionId;
         this.name = name;
         this.credit = credit;
+        this.gender = gender;
+        this.language = language;
+        this.city = city;
+        this.province = province;
+        this.country = country;
+        this.avatarUrl = avatarUrl;
     }
 
     public String getId() {
@@ -59,5 +77,53 @@ public class User {
 
     public void setCredit(Long credit) {
         this.credit = credit;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

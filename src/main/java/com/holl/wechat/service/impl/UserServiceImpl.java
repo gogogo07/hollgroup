@@ -23,11 +23,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User findById(String id) {
-        Optional<User> tmp = userRepository.findById(id);
-        if (!tmp.isPresent()) {
-            return tmp.get();
-        } else {
-            return null;
-        }
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public User insertByUser(User user) {
+        return userRepository.save(user);
     }
 }

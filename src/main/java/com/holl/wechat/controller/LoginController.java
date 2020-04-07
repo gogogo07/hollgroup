@@ -1,6 +1,11 @@
 package com.holl.wechat.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holl.wechat.dao.UserRepository;
+import com.holl.wechat.model.User;
+import com.holl.wechat.service.IUserService;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,7 +33,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 public class LoginController {
 
     @Autowired
-    private UserRepository userRepository;
+    private IUserService userService;
 
     public static String sendPost(String urlParam) throws HttpException, IOException {
         // 创建httpClient实例对象
@@ -44,6 +49,7 @@ public class LoginController {
         httpClient.executeMethod(postMethod);
 
         String result = postMethod.getResponseBodyAsString();
+
         postMethod.releaseConnection();
         return result;
     }
@@ -65,10 +71,26 @@ public class LoginController {
         return result;
     }
 
+    private Map getOpenidAndSessionkey(String code) {
+        String wxspAppid = "wx6dde262559f8bc01";
+        String wxspSecret = "565605347be6a2fd3fd919bb0b2838ba";
+
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+wxspAppid+"&secret="+wxspSecret+"&js_code="+code+"&grant_type=authorization_code";
+
+        try {
+            String data = sendGet(url);
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map jsonMap = mapper.readValue(data, Map.class);
+            return jsonMap;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
 
     @RequestMapping(value="/login",method = RequestMethod.GET)
-    public Map decodeUserInfo(@RequestParam(name = "code", defaultValue = "") String code) throws IOException {
-
+    public Map login(String code, String iv, String encryptedData) throws IOException {
 
         Map map = new HashMap();
         //登录凭证不能为空
@@ -78,15 +100,32 @@ public class LoginController {
             return map;
         }
 
-        String wxspAppid = "wx6dde262559f8bc01";
-        String wxspSecret = "565605347be6a2fd3fd919bb0b2838ba";
-        String grant_type = "authorization_code";
+        Map jsonMap = getOpenidAndSessionkey(code);
+        ObjectMapper mapper = new ObjectMapper();
 
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+wxspAppid+"&secret="+wxspSecret+"&js_code="+code+"&grant_type=authorization_code";
-        map.put("data",(sendGet(url)));
-
-        System.out.println(map.get("data").getClass());
-
+        String sessionKey = jsonMap.get("session_key").toString();
+        try {
+            String jsonData = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "utf-8");
+            if (jsonData != null && jsonData.length() > 0) {
+                Map userInfoJson = mapper.readValue(jsonData, Map.class);
+                User user = new User();
+                user.setCredit(0L);
+                user.setId(userInfoJson.get("openId").toString());
+                user.setName(userInfoJson.get("nickName").toString());
+                user.setGender(Integer.valueOf(userInfoJson.get("gender").toString()));
+                user.setCity(userInfoJson.get("city").toString());
+                user.setProvince(userInfoJson.get("province").toString());
+                user.setCountry(userInfoJson.get("country").toString());
+                user.setAvatarUrl(userInfoJson.get("avatarUrl").toString());
+                user.setLanguage(userInfoJson.get("language").toString());
+                userService.insertByUser(user);
+                map.put("status", 200);
+                map.put("mes", "login: OK");
+            }
+        } catch (Exception e) {
+            map.put("status", 0);
+            map.put("msg", "decode fail");
+        }
         return map;
     }
 
