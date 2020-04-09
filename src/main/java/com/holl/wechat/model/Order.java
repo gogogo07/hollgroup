@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity(name = "orders")
 public class Order {
@@ -15,8 +17,8 @@ public class Order {
     @Column(nullable = false, length = 30)
     private String title;
 
-    @Column(nullable = false, length = 50)
-    private String event;
+    @Column(nullable = false)
+    private String detail;
 
     @Column(nullable = false, length = 50)
     private String location;
@@ -27,22 +29,24 @@ public class Order {
     private String remarks;
 
     @Column()
-    private Date publishTime;
+    private Timestamp publishTime;
 
     @Column()
-    private Date startTime;
+    private Timestamp startTime;
 
     @Column()
-    private  Date finishTime;
+    private  Timestamp finishTime;
 
-    public Order() { }
+    public Order() {
+        this.id = new Timestamp(System.currentTimeMillis()).toString();
+    }
 
-    public Order(String id, String title, String event,
+    public Order(String id, String title, String detail,
                  String location, Float money, String remarks,
-                 Date publishTime, Date startTime, Date finishTime) {
+                 Timestamp publishTime, Timestamp startTime, Timestamp finishTime) {
         this.id = id;
         this.title = title;
-        this.event = event;
+        this.detail = detail;
         this.location = location;
         this.money = money;
         this.remarks = remarks;
@@ -67,12 +71,12 @@ public class Order {
         this.title = title;
     }
 
-    public String getEvent() {
-        return event;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setEvent(String event) {
-        this.event = event;
+    public void setDetail(String event) {
+        this.detail = event;
     }
 
     public String getLocation() {
@@ -99,27 +103,27 @@ public class Order {
         this.remarks = remarks;
     }
 
-    public Date getPublishTime() {
+    public Timestamp getPublishTime() {
         return publishTime;
     }
 
-    public void setPublishTime(Date publishTime) {
+    public void setPublishTime(Timestamp publishTime) {
         this.publishTime = publishTime;
     }
 
-    public Date getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
-    public Date getFinishTime() {
+    public Timestamp getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(Date finishTime) {
+    public void setFinishTime(Timestamp finishTime) {
         this.finishTime = finishTime;
     }
 }
