@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.holl.wechat.dao.UserMapper">
+
+    <resultMap id="userResultMap" type="com.holl.wechat.model.User">
+        <id column="u_id" property="id"/>
+        <result column="avatar_url" property="avatarUrl"/>
+        <result column="city" property="city"/>
+        <result column="country" property="country"/>
+        <result column="credit" property="credit"/>
+        <result column="gender" property="gender"/>
+        <result column="u_language" property="language"/>
+        <result column="u_name" property="name"/>
+        <result column="province" property="province"/>
+        <result column="union_id" property="unionId"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="userResultMap">
+        select * from users
+    </select>
+
+    <select id="selectUserById" parameterType="java.lang.String" resultMap="userResultMap">
+        select * from users u where u.u_id = #{id}
+    </select>
+
+    <update id="updateUser" parameterType="com.holl.wechat.model.User" flushCache="true">
+        update users set
+        avatar_url = #{avatarUrl}, city = #{city}, country = #{country},
+        credit = #{credit}, gender = #{gender},u_language = #{language},
+        u_name = #{name}, province = #{province}, union_id = #{unionId}
+        where u_id = #{id}
+    </update>
+
+    <insert id="insertUser" parameterType="com.holl.wechat.model.User" flushCache="true">
+        insert into users
+        (u_id, avatar_url, city, country, credit, gender, u_language, u_name, province, union_id)
+        select #{id}, #{avatarUrl}, #{city}, #{country}, #{credit}, #{gender}, #{language}, #{name}, #{province}, #{unionId}
+        from dual where not exists (select * from users u where u.u_id = #{id})
+    </insert>
+
+</mapper>

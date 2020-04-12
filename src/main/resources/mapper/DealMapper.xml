@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.holl.wechat.dao.DealMapper">
+
+    <resultMap id="dealResultMap" type="com.holl.wechat.model.Deal">
+        <id column="order_id" property="orderId"/>
+        <result column="from_id" property="fromId"/>
+        <result column="to_id"  property="toId"/>
+    </resultMap>
+
+    <resultMap id="FromDeal" type="com.holl.wechat.model.Deal">
+        <id column="order_id" property="orderId"/>
+        <result column="from_id" property="fromId"/>
+        <result column="to_id" property="toId"/>
+        <result column="o_id" property="order.id"/>
+        <result column="o_title" property="order.title"/>
+        <result column="o_detail" property="order.detail"/>
+        <result column="o_location" property="order.location"/>
+        <result column="o_money" property="order.money"/>
+        <result column="o_type" property="order.type"/>
+        <result column="o_publish_time" property="order.publishTime"/>
+        <result column="o_start_time" property="order.startTime"/>
+        <result column="o_finish_time" property="order.finishTime"/>
+        <result column="from_name" property="from.name"/>
+    </resultMap>
+
+    <resultMap id="ToDeal" type="com.holl.wechat.model.Deal">
+        <id column="order_id" property="orderId"/>
+        <result column="from_id" property="fromId"/>
+        <result column="to_id" property="toId"/>
+        <result column="o_id" property="order.id"/>
+        <result column="o_title" property="order.title"/>
+        <result column="o_detail" property="order.detail"/>
+        <result column="o_location" property="order.location"/>
+        <result column="o_money" property="order.money"/>
+        <result column="o_type" property="order.type"/>
+        <result column="o_publish_time" property="order.publishTime"/>
+        <result column="o_start_time" property="order.startTime"/>
+        <result column="o_finish_time" property="order.finishTime"/>
+        <result column="to_name" property="to.name"/>
+    </resultMap>
+
+
+
+    <select id="selectAll" resultMap="dealResultMap">
+        select * from deals
+    </select>
+
+    <insert id="publishDeal" parameterType="com.holl.wechat.model.Deal" flushCache="true">
+        insert into deals
+        (order_id, from_id, to_id)
+        select #{orderId}, #{fromId}, #{toId} from dual
+        where not exists (select * from deals where order_id = #{orderId})
+    </insert>
+
+    <select id="selectFromDeal" resultMap="FromDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, o.finish_time o_finish_time, u1.u_name from_name
+        from deals d, orders o, users u1
+        where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id is null
+    </select>
+
+    <select id="selectToDeal" resultMap="ToDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, o.finish_time o_finish_time, u1.u_name to_name
+        from deals d, orders o, users u1
+        where d.order_id = o.o_id and u1.u_id = d.to_id and d.from_id is null
+    </select>
+
+    <update id="startFromDeal" flushCache="true">
+        update deals set
+        to_id = #{openId}
+        where order_id = #{id}
+    </update>
+
+    <update id="startToDeal" flushCache="true">
+        update deals set
+        from_id = #{openId}
+        where order_id = #{id}
+    </update>
+
+    <delete id="deleteDeal">
+        delete from deals where order_id = #{id}
+    </delete>
+
+    <insert id="insertIntoOld">
+        insert into deals_old select * from deals where order_id = #{id}
+    </insert>
+
+</mapper>

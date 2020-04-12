@@ -1,33 +1,36 @@
 package com.holl.wechat.service.impl;
 
-import com.holl.wechat.dao.UserRepository;
+import com.holl.wechat.dao.UserMapper;
 import com.holl.wechat.model.User;
-import com.holl.wechat.service.IUserService;
+import com.holl.wechat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Entity;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserMapper userMapper;
 
     @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userMapper.selectAll();
     }
 
     @Override
-    public User findById(String id) {
-        return userRepository.findById(id).orElse(null);
+    public User findUserById(String id) {
+        return userMapper.selectUserById(id);
     }
 
     @Override
-    public User insertByUser(User user) {
-        return userRepository.save(user);
+    public int updateUser(User user) {
+        return userMapper.updateUser(user);
+    }
+
+    @Override
+    public int insertUser(User user) {
+        return userMapper.insertUser(user);
     }
 }

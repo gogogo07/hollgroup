@@ -1,55 +1,40 @@
 package com.holl.wechat.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 
-@Entity(name = "orders")
 public class Order {
 
-    @Id
-    @Column(nullable = false, length = 30)
     private String id;
 
-    @Column(nullable = false, length = 30)
     private String title;
 
-    @Column(nullable = false)
     private String detail;
 
-    @Column(nullable = false, length = 50)
     private String location;
 
-    @Column(nullable = false)
     private Float money;
 
-    private String remarks;
+    private String type;
 
-    @Column()
-    private Timestamp publishTime;
+    private String publishTime;
 
-    @Column()
-    private Timestamp startTime;
+    private String startTime;
 
-    @Column()
-    private  Timestamp finishTime;
+    private  String finishTime;
 
     public Order() {
         this.id = new Timestamp(System.currentTimeMillis()).toString();
     }
 
     public Order(String id, String title, String detail,
-                 String location, Float money, String remarks,
-                 Timestamp publishTime, Timestamp startTime, Timestamp finishTime) {
+                 String location, Float money, String type,
+                 String publishTime, String startTime, String finishTime) {
         this.id = id;
         this.title = title;
         this.detail = detail;
         this.location = location;
         this.money = money;
-        this.remarks = remarks;
+        this.type = type;
         this.publishTime = publishTime;
         this.startTime = startTime;
         this.finishTime = finishTime;
@@ -75,8 +60,8 @@ public class Order {
         return detail;
     }
 
-    public void setDetail(String event) {
-        this.detail = event;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getLocation() {
@@ -95,35 +80,50 @@ public class Order {
         this.money = money;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public String getType() {
+        return type;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Timestamp getPublishTime() {
+    public String getPublishTime() {
         return publishTime;
     }
 
-    public void setPublishTime(Timestamp publishTime) {
+    public void setPublishTime(String publishTime) {
         this.publishTime = publishTime;
     }
 
-    public Timestamp getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Timestamp getFinishTime() {
+    public String getFinishTime() {
         return finishTime;
     }
 
-    public void setFinishTime(Timestamp finishTime) {
+    public void setFinishTime(String finishTime) {
         this.finishTime = finishTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", detail='" + detail + '\'' +
+                ", location='" + location + '\'' +
+                ", money=" + money +
+                ", type='" + type + '\'' +
+                ", publishTime='" + publishTime + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", finishTime='" + finishTime + '\'' +
+                '}';
     }
 }

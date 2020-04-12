@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.holl.wechat.dao.OrderMapper">
+
+    <resultMap id="orderResultMap" type="com.holl.wechat.model.Order">
+        <id column="o_id" property="id"/>
+        <result column="finish_time" property="finishTime"/>
+        <result column="location" property="location"/>
+        <result column="money" property="money"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="o_type" property="type"/>
+        <result column="start_time" property="startTime"/>
+        <result column="o_title" property="title"/>
+        <result column="detail" property="detail"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="orderResultMap">
+        select * from orders
+    </select>
+
+    <select id="selectOrderById" parameterType="java.lang.String" resultMap="orderResultMap">
+        select * from orders o where o.o_id = #{id}
+    </select>
+
+    <update id="startOrder" flushCache="true">
+        update orders set
+        start_time = #{startTime}
+        where o_id = #{id}
+    </update>
+
+    <insert id="publishOrder" parameterType="com.holl.wechat.model.Order" flushCache="true">
+        insert into orders
+        (o_id, finish_time, location, money, publish_time, o_type, start_time, o_title, detail)
+        select #{id}, #{finishTime}, #{location}, #{money}, #{publishTime}, #{type}, #{startTime}, #{title}, #{detail}
+        from dual where not exists (select * from orders o where o.o_id = #{id})
+    </insert>
+
+    <select id="selectAllOld" resultMap="orderResultMap">
+        select * from orders_old
+    </select>
+
+    <insert id="insertIntoOld">
+        insert into orders_old select * from orders where o_id = #{id}
+    </insert>
+
+    <delete id="deleteOrder">
+        delete from orders where o_id = #{id}
+    </delete>
+
+    <update id="setOrderFinishTime">
+        update orders_old set
+        finish_time = #{finishTime}
+        where o_id = #{id}
+    </update>
+
+</mapper>

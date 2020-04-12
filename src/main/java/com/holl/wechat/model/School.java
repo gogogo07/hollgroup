@@ -1,17 +1,9 @@
 package com.holl.wechat.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity(name = "schools")
 public class School {
 
-    @Id
-    @Column(nullable = false)
     private String id;
 
-    @Column(nullable = false, unique = true)
     private String name;
 
     public School() { }

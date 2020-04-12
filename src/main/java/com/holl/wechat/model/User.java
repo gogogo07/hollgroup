@@ -1,20 +1,11 @@
 package com.holl.wechat.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity(name = "users")
 public class User {
 
-    @Id
-    @Column(nullable = false)
     private String id;
 
-    @Column()
     private String unionId;
 
-    @Column(nullable = false)
     private String name;
 
     private Long credit;
@@ -125,5 +116,21 @@ public class User {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", unionId='" + unionId + '\'' +
+                ", name='" + name + '\'' +
+                ", credit=" + credit +
+                ", gender=" + gender +
+                ", language='" + language + '\'' +
+                ", city='" + city + '\'' +
+                ", province='" + province + '\'' +
+                ", country='" + country + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                '}';
     }
 }

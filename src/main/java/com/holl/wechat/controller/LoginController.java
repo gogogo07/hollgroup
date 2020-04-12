@@ -1,25 +1,17 @@
 package com.holl.wechat.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.holl.wechat.dao.UserRepository;
 import com.holl.wechat.model.User;
-import com.holl.wechat.service.IUserService;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.holl.wechat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.IOException;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -33,7 +25,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 public class LoginController {
 
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     public static String sendPost(String urlParam) throws HttpException, IOException {
         // 创建httpClient实例对象
@@ -118,15 +110,28 @@ public class LoginController {
                 user.setCountry(userInfoJson.get("country").toString());
                 user.setAvatarUrl(userInfoJson.get("avatarUrl").toString());
                 user.setLanguage(userInfoJson.get("language").toString());
-                userService.insertByUser(user);
+                if (userService.insertUser(user) == 0) {
+                    System.out.println(userService.updateUser(user));
+                }
+                map.put("openid", jsonMap.get("openid"));
                 map.put("status", 200);
-                map.put("mes", "login: OK");
+                map.put("msg", "login: OK");
             }
         } catch (Exception e) {
             map.put("status", 0);
             map.put("msg", "decode fail");
         }
         return map;
+    }
+
+    @RequestMapping("/user/getall")
+    public List<User> getAllUser() {
+        return userService.findAll();
+    }
+
+    @RequestMapping("/user/getUserById")
+    public User getUserById(String id) {
+        return userService.findUserById(id);
     }
 
 }
