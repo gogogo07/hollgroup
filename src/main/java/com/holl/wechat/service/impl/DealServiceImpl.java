@@ -20,10 +20,28 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
-    public List<Deal> selectAllMyDeal() {
-        List<Deal> deals = dealMapper.selectFromDeal();
-        deals.addAll(dealMapper.selectToDeal());
-        return deals;
+    public List<Deal> selectPublishedDeal() {
+        return dealMapper.selectPublishedDeal();
+    }
+
+    @Override
+    public List<Deal> selectMyPublishedDeal(String from_id) {
+        return dealMapper.selectMyPublishedDeal(from_id);
+    }
+
+    @Override
+    public List<Deal> selectMyUnfinishDeal(String from_id) {
+        return dealMapper.selectMyUnfinishDeal(from_id);
+    }
+
+    @Override
+    public List<Deal> selectOtherUnfinishDeal(String to_id) {
+        return dealMapper.selectOtherUnfinishDeal(to_id);
+    }
+
+    @Override
+    public List<Deal> selectHistoryDeal(String from_id) {
+        return dealMapper.selectHistoryDeal(from_id);
     }
 
     @Override
@@ -32,18 +50,15 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
-    public int startDeal(String orderId, String type, String openId) {
-        if (type.equals("111")) {
-            return dealMapper.startFromDeal(orderId, openId);
-        } else {
-            return dealMapper.startToDeal(orderId, openId);
-        }
+    public int startDeal(Long orderId, String openId) {
+        return dealMapper.startDeal(orderId, openId);
     }
 
     @Override
     public int finishDeal(String id) {
-        int insert = dealMapper.insertIntoOld(id);
-        int delete = dealMapper.deleteDeal(id);
+        Long my_id = Long.parseLong(id);
+        int insert = dealMapper.insertIntoOld(my_id);
+        int delete = dealMapper.deleteDeal(my_id);
         if (insert == 1 && delete == 1) {
             return 1;
         } else {

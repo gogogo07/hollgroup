@@ -8,7 +8,40 @@
         <result column="to_id"  property="toId"/>
     </resultMap>
 
-    <resultMap id="FromDeal" type="com.holl.wechat.model.Deal">
+    <!--这个是发布了但是未完成的订单的结果集-->
+    <resultMap id="currentDeal" type="com.holl.wechat.model.Deal">
+        <id column="order_id" property="orderId"/>
+        <result column="from_id" property="fromId"/>
+        <result column="to_id" property="toId"/>
+        <result column="o_id" property="order.id"/>
+        <result column="o_title" property="order.title"/>
+        <result column="o_detail" property="order.detail"/>
+        <result column="o_location" property="order.location"/>
+        <result column="o_money" property="order.money"/>
+        <result column="o_type" property="order.type"/>
+        <result column="o_publish_time" property="order.publishTime"/>
+        <result column="from_name" property="from.name"/>
+    </resultMap>
+
+    <!--这是已经接受，但是还没有完成的结果集-->
+    <resultMap id="onDoingDeal" type="com.holl.wechat.model.Deal">
+        <id column="order_id" property="orderId"/>
+        <result column="from_id" property="fromId"/>
+        <result column="to_id" property="toId"/>
+        <result column="o_id" property="order.id"/>
+        <result column="o_title" property="order.title"/>
+        <result column="o_detail" property="order.detail"/>
+        <result column="o_location" property="order.location"/>
+        <result column="o_money" property="order.money"/>
+        <result column="o_type" property="order.type"/>
+        <result column="o_publish_time" property="order.publishTime"/>
+        <result column="o_start_time" property="order.startTime"/>
+        <result column="from_name" property="from.name"/>
+        <result column="to_name" property="to.name"/>
+    </resultMap>
+
+    <!--这是返回历史订单的结果集-->
+    <resultMap id="historyDeal" type="com.holl.wechat.model.Deal">
         <id column="order_id" property="orderId"/>
         <result column="from_id" property="fromId"/>
         <result column="to_id" property="toId"/>
@@ -22,30 +55,15 @@
         <result column="o_start_time" property="order.startTime"/>
         <result column="o_finish_time" property="order.finishTime"/>
         <result column="from_name" property="from.name"/>
-    </resultMap>
-
-    <resultMap id="ToDeal" type="com.holl.wechat.model.Deal">
-        <id column="order_id" property="orderId"/>
-        <result column="from_id" property="fromId"/>
-        <result column="to_id" property="toId"/>
-        <result column="o_id" property="order.id"/>
-        <result column="o_title" property="order.title"/>
-        <result column="o_detail" property="order.detail"/>
-        <result column="o_location" property="order.location"/>
-        <result column="o_money" property="order.money"/>
-        <result column="o_type" property="order.type"/>
-        <result column="o_publish_time" property="order.publishTime"/>
-        <result column="o_start_time" property="order.startTime"/>
-        <result column="o_finish_time" property="order.finishTime"/>
         <result column="to_name" property="to.name"/>
     </resultMap>
 
-
-
+    <!--查找deals中所有的订单-->
     <select id="selectAll" resultMap="dealResultMap">
         select * from deals
     </select>
 
+    <!--发布订单-->
     <insert id="publishDeal" parameterType="com.holl.wechat.model.Deal" flushCache="true">
         insert into deals
         (order_id, from_id, to_id)
@@ -53,31 +71,52 @@
         where not exists (select * from deals where order_id = #{orderId})
     </insert>
 
-    <select id="selectFromDeal" resultMap="FromDeal">
+    <!--查找所有已经发布了但还没有接受的订单,用于显示所有的发布的订单-->
+    <select id="selectPublishedDeal" resultMap="currentDeal">
         select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
-        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
-        o.start_time o_start_time, o.finish_time o_finish_time, u1.u_name from_name
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type,
+        o.publish_time o_publish_time, u1.u_name from_name
         from deals d, orders o, users u1
         where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id is null
     </select>
 
-    <select id="selectToDeal" resultMap="ToDeal">
+    <select id="selectMyPublishedDeal" resultMap="currentDeal">
         select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
-        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
-        o.start_time o_start_time, o.finish_time o_finish_time, u1.u_name to_name
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type,
+        o.publish_time o_publish_time, u1.u_name from_name
         from deals d, orders o, users u1
-        where d.order_id = o.o_id and u1.u_id = d.to_id and d.from_id is null
+        where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id is null and u1.u_id = #{id}
     </select>
 
-    <update id="startFromDeal" flushCache="true">
+    <!--查找所有已经发布并且接单的，但是没有完成的订单，用于用户查找自己所发布的但没有完成的订单-->
+    <select id="selectMyUnfinishDeal" resultMap="onDoingDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, u1.u_name from_name, u2.u_name to_name
+        from deals d, orders o, users u1, users u2
+        where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and u1.u_id = #{id}
+    </select>
+
+    <select id="selectOtherUnfinishDeal" resultMap="onDoingDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, u1.u_name from_name, u2.u_name to_name
+        from deals d, orders o, users u1, users u2
+        where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and u2.u_id = #{id}
+    </select>
+
+    <!--查找历史订单,用于用户查找自己的历史订单-->
+    <select id="selectHistoryDeal" resultMap="historyDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, o.finish_time o_finish_time, u1.u_name from_name, u2.u_name to_name
+        from deals_old d, orders_old o, users u1, users u2
+        where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and u1.u_id = #{id}
+    </select>
+
+    <update id="startDeal" flushCache="true">
         update deals set
         to_id = #{openId}
-        where order_id = #{id}
-    </update>
-
-    <update id="startToDeal" flushCache="true">
-        update deals set
-        from_id = #{openId}
         where order_id = #{id}
     </update>
 

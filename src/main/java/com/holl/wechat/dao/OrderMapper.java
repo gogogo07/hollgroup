@@ -14,15 +14,19 @@ public interface OrderMapper {
 
     List<Order> selectAllOld();
 
-    Order selectOrderById(String id);
+    Order selectOrderById(Long id);
 
     int publishOrder(Order order);
 
-    int startOrder(@Param("id") String id, @Param("startTime") String startTime);
+    int startOrder(@Param("id") Long id, @Param("startTime") String startTime);
 
-    int deleteOrder(String id);
+    int deleteOrder(Long id);
 
-    int insertIntoOld(String id);
+    int insertIntoOld(Long id);
 
-    int setOrderFinishTime(String id, String finishTime);
+    int setOrderFinishTime(Long id, String finishTime);
+
+    Long getOrderMaxId();
+
+    Long getOrderOldMaxId();
 }

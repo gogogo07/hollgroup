@@ -6,7 +6,7 @@ public class Deal {
 
     private String toId;
 
-    private String orderId;
+    private Long orderId;
 
     private Order order;
 
@@ -16,17 +16,17 @@ public class Deal {
 
     public Deal() { }
 
-    public Deal(String orderId, String fromId, String toId) {
+    public Deal(Long orderId, String fromId, String toId) {
         this.orderId = orderId;
         this.fromId = fromId;
         this.toId = toId;
     }
 
-    public String getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 

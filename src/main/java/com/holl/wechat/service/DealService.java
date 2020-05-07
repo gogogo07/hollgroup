@@ -8,11 +8,19 @@ public interface DealService {
 
     List<Deal> selectAll();
 
-    List<Deal> selectAllMyDeal();
+    List<Deal> selectPublishedDeal();
+
+    List<Deal> selectMyPublishedDeal(String from_id);
+
+    List<Deal> selectMyUnfinishDeal(String from_id);
+
+    List<Deal> selectOtherUnfinishDeal(String to_id);
+
+    List<Deal> selectHistoryDeal(String from_id);
 
     int publishDeal(Deal deal);
 
-    int startDeal(String orderId, String type, String openId);
+    int startDeal(Long orderId, String openId);
 
     int finishDeal(String id);
 }

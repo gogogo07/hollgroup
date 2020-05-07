@@ -21,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order selectOrderById(String id) {
+    public Order selectOrderById(Long id) {
         return orderMapper.selectOrderById(id);
     }
 
@@ -31,12 +31,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int startOrder(String id) {
+    public int startOrder(Long id) {
         return orderMapper.startOrder(id, new Timestamp(System.currentTimeMillis()).toString().substring(0, 19));
     }
 
     @Override
-    public int finishOrder(String id) {
+    public int finishOrder(Long id) {
         int delete = orderMapper.deleteOrder(id);
         if (delete == 1) {
             return 1;
@@ -46,13 +46,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int insertIntoOld(String id) {
+    public int insertIntoOld(Long id) {
         int insert = orderMapper.insertIntoOld(id);
         int update = orderMapper.setOrderFinishTime(id, new Timestamp(System.currentTimeMillis()).toString().substring(0, 19));
         if (insert == 1 && update == 1) {
             return 1;
         } else {
             return 0;
+        }
+    }
+
+    @Override
+    public Long getMaxId() {
+        Long orderNum = orderMapper.getOrderMaxId(), oldOrderNum = orderMapper.getOrderOldMaxId();
+        if (orderNum != null && oldOrderNum != null) {
+            return orderNum > oldOrderNum ? orderNum: oldOrderNum;
+        } else if (orderNum != null || oldOrderNum != null) {
+            return orderNum != null ? orderNum: oldOrderNum;
+        } else {
+            return 0L;
         }
     }
 }

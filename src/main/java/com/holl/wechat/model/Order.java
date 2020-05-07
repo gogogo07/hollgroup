@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class Order {
 
-    private String id;
+    private Long id;
 
     private String title;
 
@@ -16,17 +16,19 @@ public class Order {
 
     private String type;
 
+    private String phone;
+
+    private String picture;
+
     private String publishTime;
 
     private String startTime;
 
     private  String finishTime;
 
-    public Order() {
-        this.id = new Timestamp(System.currentTimeMillis()).toString();
-    }
+    public Order() { }
 
-    public Order(String id, String title, String detail,
+    public Order(Long id, String title, String detail,
                  String location, Float money, String type,
                  String publishTime, String startTime, String finishTime) {
         this.id = id;
@@ -40,11 +42,11 @@ public class Order {
         this.finishTime = finishTime;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -110,6 +112,22 @@ public class Order {
 
     public void setFinishTime(String finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     @Override

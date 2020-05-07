@@ -8,13 +8,15 @@ public interface OrderService {
 
     List<Order> selectAll();
 
-    Order selectOrderById(String id);
+    Order selectOrderById(Long id);
 
     int publishOrder(Order order);
 
-    int startOrder(String id);
+    int startOrder(Long id);
 
-    int finishOrder(String id);
+    int finishOrder(Long id);
 
-    int insertIntoOld(String id);
+    int insertIntoOld(Long id);
+
+    Long getMaxId();
 }
