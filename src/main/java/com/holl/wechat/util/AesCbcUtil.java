@@ -1,16 +1,11 @@
-package com.holl.wechat.controller;
+package com.holl.wechat.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.security.*;
-import java.security.spec.InvalidParameterSpecException;
 public class AesCbcUtil { 
     static {
         //BouncyCastle是一个开源的加解密解决方案，主页在http://www.bouncycastle.org/

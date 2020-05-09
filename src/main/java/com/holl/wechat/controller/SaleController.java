@@ -1,13 +1,11 @@
 package com.holl.wechat.controller;
 
-import com.holl.wechat.Global;
 import com.holl.wechat.model.Sale;
 import com.holl.wechat.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.soap.Detail;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

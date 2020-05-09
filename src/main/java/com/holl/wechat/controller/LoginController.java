@@ -3,6 +3,8 @@ package com.holl.wechat.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.holl.wechat.model.User;
 import com.holl.wechat.service.UserService;
+import com.holl.wechat.util.AesCbcUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,17 +65,18 @@ public class LoginController {
         return result;
     }
 
-    private Map getOpenidAndSessionkey(String code) {
+    private Map<String, Object> getOpenidAndSessionkey(String code) {
         String wxspAppid = "wx6dde262559f8bc01";
         String wxspSecret = "565605347be6a2fd3fd919bb0b2838ba";
 
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+wxspAppid+"&secret="+wxspSecret+"&js_code="+code+"&grant_type=authorization_code";
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid" + 
+            wxspAppid + "&secret=" + wxspSecret + "&js_code=" + code + "&grant_type=authorization_code";
 
         try {
             String data = sendGet(url);
 
             ObjectMapper mapper = new ObjectMapper();
-            Map jsonMap = mapper.readValue(data, Map.class);
+            Map<String, Object> jsonMap = mapper.readValue(data, Map.class);
             return jsonMap;
         } catch (IOException e) {
             return null;
@@ -82,9 +85,9 @@ public class LoginController {
 
 
     @RequestMapping(value="/login",method = RequestMethod.GET)
-    public Map login(String code, String iv, String encryptedData) throws IOException {
+    public Map<String, Object> login(String code, String iv, String encryptedData) throws IOException {
 
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         //登录凭证不能为空
         if (code == null || code.length() == 0) {
             map.put("status", 0);
@@ -99,7 +102,7 @@ public class LoginController {
         try {
             String jsonData = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "utf-8");
             if (jsonData != null && jsonData.length() > 0) {
-                Map userInfoJson = mapper.readValue(jsonData, Map.class);
+                Map<String, Object> userInfoJson = mapper.readValue(jsonData, Map.class);
                 User user = new User();
                 user.setCredit(0L);
                 user.setId(userInfoJson.get("openId").toString());
