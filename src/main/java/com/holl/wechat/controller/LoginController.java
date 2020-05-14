@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 
 @RestController
+@RequestMapping("/user")
 public class LoginController {
 
     @Autowired
@@ -66,11 +67,11 @@ public class LoginController {
     }
 
     private Map<String, Object> getOpenidAndSessionkey(String code) {
-        String wxspAppid = "wx6dde262559f8bc01";
-        String wxspSecret = "565605347be6a2fd3fd919bb0b2838ba";
+        String appId = "wxd666797118014c6f";
+        String appSecret = "2bc0041de520030d4651daea3d2547e6";
 
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid" + 
-            wxspAppid + "&secret=" + wxspSecret + "&js_code=" + code + "&grant_type=authorization_code";
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + 
+            appId + "&secret=" + appSecret + "&js_code=" + code + "&grant_type=authorization_code";
 
         try {
             String data = sendGet(url);
@@ -84,8 +85,8 @@ public class LoginController {
     }
 
 
-    @RequestMapping(value="/login",method = RequestMethod.GET)
-    public Map<String, Object> login(String code, String iv, String encryptedData) throws IOException {
+    @RequestMapping(value="/login")
+    public Map<String, Object> login(String code, String iv, String encryptedData) {
 
         Map<String, Object> map = new HashMap<>();
         //登录凭证不能为空
@@ -94,8 +95,7 @@ public class LoginController {
             map.put("msg", "code 不能为空");
             return map;
         }
-
-        Map jsonMap = getOpenidAndSessionkey(code);
+        Map<String, Object> jsonMap = getOpenidAndSessionkey(code);
         ObjectMapper mapper = new ObjectMapper();
 
         String sessionKey = jsonMap.get("session_key").toString();
@@ -127,12 +127,12 @@ public class LoginController {
         return map;
     }
 
-    @RequestMapping("/user/getall")
+    @RequestMapping("/getall")
     public List<User> getAllUser() {
         return userService.findAll();
     }
 
-    @RequestMapping("/user/getUserById")
+    @RequestMapping("/getUserById")
     public User getUserById(String id) {
         return userService.findUserById(id);
     }

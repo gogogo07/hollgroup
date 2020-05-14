@@ -22,7 +22,7 @@ public class SaleController {
         return saleService.findAll();
     }
 
-    @RequestMapping("/publish")//TODO：idnumber要自增
+    @RequestMapping("/publish")  //TODO：idnumber要自增
     public Map publish(String openId,String title,String detail,String picture,float money,String phone) {
         //Global.lock.lock();
 
@@ -86,6 +86,5 @@ public class SaleController {
         System.out.println(openId);
         return saleService.findSaleByOpenId(openId);
     }
-
-
+    
 }

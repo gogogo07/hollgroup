@@ -26,22 +26,33 @@ public class DealServiceImpl implements DealService {
 
     @Override
     public List<Deal> selectMyPublishedDeal(String from_id) {
-        return dealMapper.selectMyPublishedDeal(from_id);
+        List<Deal> deals = dealMapper.selectMyPublishedDealWithoutAccept(from_id);
+        deals.addAll(dealMapper.selectMyPublishedDeal(from_id));
+        return deals;
     }
 
     @Override
-    public List<Deal> selectMyUnfinishDeal(String from_id) {
-        return dealMapper.selectMyUnfinishDeal(from_id);
+    public Deal selectDealById(String order_id) {
+        Deal deal = dealMapper.selectDealById(order_id);
+        if (deal == null) {
+            deal = dealMapper.selectDealWithoutAcceptById(order_id);
+        }
+        return deal;
     }
 
     @Override
-    public List<Deal> selectOtherUnfinishDeal(String to_id) {
-        return dealMapper.selectOtherUnfinishDeal(to_id);
+    public List<Deal> selectMyAcceptDeal(String to_id) {
+        return dealMapper.selectMyAcceptDeal(to_id);
     }
 
     @Override
     public List<Deal> selectHistoryDeal(String from_id) {
         return dealMapper.selectHistoryDeal(from_id);
+    }
+
+    @Override
+    public Deal selectHistoryDealById(String orderId) {
+        return dealMapper.selectHistoryDealById(orderId);
     }
 
     @Override

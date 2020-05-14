@@ -21,6 +21,7 @@
         <result column="o_type" property="order.type"/>
         <result column="o_publish_time" property="order.publishTime"/>
         <result column="from_name" property="from.name"/>
+        <result column="avatar_url" property="from.avatarUrl"/>
     </resultMap>
 
     <!--这是已经接受，但是还没有完成的结果集-->
@@ -75,34 +76,58 @@
     <select id="selectPublishedDeal" resultMap="currentDeal">
         select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
         o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type,
-        o.publish_time o_publish_time, u1.u_name from_name
+        o.publish_time o_publish_time, u1.u_name from_name, u1.avatar_url avatar_url
         from deals d, orders o, users u1
         where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id is null
+        order by o.publish_time
     </select>
 
-    <select id="selectMyPublishedDeal" resultMap="currentDeal">
-        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
-        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type,
-        o.publish_time o_publish_time, u1.u_name from_name
-        from deals d, orders o, users u1
-        where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id is null and u1.u_id = #{id}
-    </select>
-
-    <!--查找所有已经发布并且接单的，但是没有完成的订单，用于用户查找自己所发布的但没有完成的订单-->
-    <select id="selectMyUnfinishDeal" resultMap="onDoingDeal">
+    <!--查找所有用户发布的但是还没有完成的订单-->
+    <select id="selectMyPublishedDeal" resultMap="onDoingDeal">
         select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
         o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
         o.start_time o_start_time, u1.u_name from_name, u2.u_name to_name
         from deals d, orders o, users u1, users u2
-        where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and u1.u_id = #{id}
+        where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id = u2.u_id and u1.u_id = #{from_id}
+        order by o.publish_time
     </select>
 
-    <select id="selectOtherUnfinishDeal" resultMap="onDoingDeal">
+    <!--通过订单号查找订单的详细信息-->
+    <select id="selectDealById" resultMap="onDoingDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, u1.u_name from_name, u2.u_name to_name
+        from deals d, orders o, users u1, users u2
+        where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id = u2.u_id and d.order_id = #{order_id}
+    </select>
+
+    <!--通过订单号查找还没接单的订单-->
+    <select id="selectDealWithoutAcceptById" resultMap="currentDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, u1.u_name from_name
+        from deals d, orders o, users u1
+        where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id is null and d.order_id = #{order_id}
+    </select>
+
+    <!--查找我发布的但是还没有接单的订单-->
+    <select id="selectMyPublishedDealWithoutAccept" resultMap="currentDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, u1.u_name from_name
+        from deals d, orders o, users u1
+        where d.order_id = o.o_id and u1.u_id = d.from_id and d.to_id is null and d.from_id = #{from_id}
+        order by o.publish_time
+    </select>
+
+    <!--查找我接单的但是还没有完成的订单-->
+    <select id="selectMyAcceptDeal" resultMap="onDoingDeal">
         select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
         o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
         o.start_time o_start_time, u1.u_name from_name, u2.u_name to_name
         from deals d, orders o, users u1, users u2
         where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and u2.u_id = #{id}
+        order by o.publish_time
     </select>
 
     <!--查找历史订单,用于用户查找自己的历史订单-->
@@ -111,7 +136,17 @@
         o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
         o.start_time o_start_time, o.finish_time o_finish_time, u1.u_name from_name, u2.u_name to_name
         from deals_old d, orders_old o, users u1, users u2
-        where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and u1.u_id = #{id}
+        where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and (u1.u_id = #{from_id} or u2.u_id = #{from_id})
+        order by o.finish_time
+    </select>
+
+    <!--通过订单的id查找订单的详细信息-->
+    <select id="selectHistoryDealById" resultMap="historyDeal">
+        select d.order_id order_id, d.from_id from_id, d.to_id to_id, o.o_id o_id, o.o_title o_title,
+        o.detail o_detail, o.location o_location, o.money o_money, o.o_type o_type, o.publish_time o_publish_time,
+        o.start_time o_start_time, o.finish_time o_finish_time, u1.u_name from_name, u2.u_name to_name
+        from deals_old d, orders_old o, users u1, users u2
+        where d.order_id = o.o_id and u1.u_id = d.from_id and u2.u_id = d.to_id and o.o_id = #{order_id}
     </select>
 
     <update id="startDeal" flushCache="true">

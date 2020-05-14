@@ -12,11 +12,13 @@ public interface DealService {
 
     List<Deal> selectMyPublishedDeal(String from_id);
 
-    List<Deal> selectMyUnfinishDeal(String from_id);
+    Deal selectDealById(String order_id);
 
-    List<Deal> selectOtherUnfinishDeal(String to_id);
+    List<Deal> selectMyAcceptDeal(String to_id);
 
     List<Deal> selectHistoryDeal(String from_id);
+
+    Deal selectHistoryDealById(String orderId);
 
     int publishDeal(Deal deal);
 
