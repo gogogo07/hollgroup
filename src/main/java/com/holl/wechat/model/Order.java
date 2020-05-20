@@ -1,7 +1,5 @@
 package com.holl.wechat.model;
 
-import java.sql.Timestamp;
-
 public class Order {
 
     private Long id;

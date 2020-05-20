@@ -10,6 +10,8 @@ public interface DealService {
 
     List<Deal> selectPublishedDeal();
 
+    List<Deal> selectPublishedDealByType(String type); 
+
     List<Deal> selectMyPublishedDeal(String from_id);
 
     Deal selectDealById(String order_id);

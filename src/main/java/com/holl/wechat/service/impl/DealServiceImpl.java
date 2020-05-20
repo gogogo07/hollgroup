@@ -25,10 +25,8 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
-    public List<Deal> selectMyPublishedDeal(String from_id) {
-        List<Deal> deals = dealMapper.selectMyPublishedDealWithoutAccept(from_id);
-        deals.addAll(dealMapper.selectMyPublishedDeal(from_id));
-        return deals;
+    public List<Deal> selectPublishedDealByType(String type) {
+        return dealMapper.selectPublishedDealByType(type);
     }
 
     @Override
@@ -38,6 +36,13 @@ public class DealServiceImpl implements DealService {
             deal = dealMapper.selectDealWithoutAcceptById(order_id);
         }
         return deal;
+    }
+
+    @Override
+    public List<Deal> selectMyPublishedDeal(String from_id) {
+        List<Deal> deals = dealMapper.selectMyPublishedDealWithoutAccept(from_id);
+        deals.addAll(dealMapper.selectMyPublishedDeal(from_id));
+        return deals;
     }
 
     @Override

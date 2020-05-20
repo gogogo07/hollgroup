@@ -27,8 +27,8 @@ public class OrderController {
     private DealService dealService;
 
     @RequestMapping("/submit")
-    public Map<String, Object> submit(String openid, String title, String price, 
-            String type, String location, String detail, String phone, String picture) {
+    public Map<String, Object> submit(String openid, String title, String price, String type, String location,
+            String detail, String phone, String picture) {
         Global.lock.lock();
         Order order = new Order();
         order.setId(orderService.getMaxId() + 1);
@@ -47,7 +47,7 @@ public class OrderController {
         deal.setFromId(openid);
 
         Map<String, Object> map = new HashMap<>();
-        if (orderService.publishOrder(order) == 1){
+        if (orderService.publishOrder(order) == 1) {
             if (dealService.publishDeal(deal) == 1) {
                 map.put("mes", "提交成功");
             }
@@ -58,37 +58,84 @@ public class OrderController {
         return map;
     }
 
-    //查找所有发布了的但是没有人接单的订单
-    @RequestMapping("/fresh")
-    public List<PublishDealData> fresh() {
-        List<Deal> deals = dealService.selectPublishedDeal();
-        List<PublishDealData> publishDealDatas = new ArrayList<>();
+    // 查找所有发布了的但是没有人接单的订单
+    @RequestMapping("/freshByType")
+    public Map<String, List<PublishDealData>> fresh(int type) {
+        Map<String, List<PublishDealData>> orders = new HashMap<>();
         int i = 0;
-        for (Deal deal: deals) {
-            publishDealDatas.add(new PublishDealData(i++, deal));
+        String myType = String.valueOf(type + 1);
+        switch (myType) {
+            case "1":
+                List<PublishDealData> sendOrder = new ArrayList<>();
+                for (Deal deal : dealService.selectPublishedDealByType(myType)) {
+                    sendOrder.add(new PublishDealData(i++, deal));
+                }
+                orders.put("sendOrder", sendOrder);
+                break;
+            case "2":
+                List<PublishDealData> questionOrder = new ArrayList<>();
+                for (Deal deal : dealService.selectPublishedDealByType(myType)) {
+                    questionOrder.add(new PublishDealData(i++, deal));
+                }
+                orders.put("questionOrder", questionOrder);
+                break;
+            case "3":
+                List<PublishDealData> marketOrder = new ArrayList<>();
+                for (Deal deal : dealService.selectPublishedDealByType(myType)) {
+                    marketOrder.add(new PublishDealData(i++, deal));
+                }
+                orders.put("marketOrder", marketOrder);
+                break;
+            case "4":
+                List<PublishDealData> otherOrder = new ArrayList<>();
+                for (Deal deal : dealService.selectPublishedDealByType(myType)) {
+                    otherOrder.add(new PublishDealData(i++, deal));
+                }
+                orders.put("otherOrder", otherOrder);
+                break;
+            default:
+                break;
         }
-        return publishDealDatas;
+        return orders;
     }
 
-    //查找用户id的用户发布了但是还有人接单的订单
-    @RequestMapping("/getMyPublishedOrder")
-    public List<Deal> getMyPublishedOrder(String fromId) {
-        return dealService.selectMyPublishedDeal(fromId);
-    }
-
+    //通过订单id查找订单的详细信息
     @RequestMapping("/getDealById")
     public DealDetail selectDealById(String orderId) {
         Deal deal = dealService.selectDealById(orderId);
         return new DealDetail(deal);
     }
 
-    //查找用户为id的用户已经接受的但是还没完成的订单
+    // 查找用户id的用户发布的但是还未完成的所有订单
+    @RequestMapping("/getMyPublishedOrder")
+    public List<Deal> getMyPublishedOrder(String fromId) {
+        return dealService.selectMyPublishedDeal(fromId);
+    }    
+
+    // 查找用户为id的用户已经接受的但是还没完成的订单
     @RequestMapping("/getMyAcceptDeal")
     public List<Deal> getMyAcceptDeal(String toId) {
         return dealService.selectMyAcceptDeal(toId);
     }
 
-    //接单
+    //查找用户发布的和接受的未完成的订单
+    @RequestMapping("/getOrderInfo")
+    public Map<String, List<DealDetail>> getOrderInfo(String id) {
+        Map<String, List<DealDetail>> orders = new HashMap<>();
+        List<DealDetail> publishOrder = new ArrayList<>();
+        List<DealDetail> acceptOrder = new ArrayList<>();
+        for (Deal deal: getMyPublishedOrder(id)) {
+            publishOrder.add(new DealDetail(deal));
+        }
+        for (Deal deal: getMyAcceptDeal(id)) {
+            acceptOrder.add(new DealDetail(deal));
+        }
+        orders.put("publishOrder", publishOrder);
+        orders.put("acceptOrder", acceptOrder);
+        return orders;
+    }
+
+    // 接单
     @RequestMapping("/start")
     public Map<String, Object> acceptOrder(String orderId, String openId) {
         Global.lock.lock();
@@ -136,7 +183,7 @@ public class OrderController {
         int i = 0;
         String time = historyDeals.get(0).getOrder().getFinishTime().substring(5, 10);
         HistoryDealData historyDealData = new HistoryDealData(time);
-        for (Deal deal: historyDeals) {
+        for (Deal deal : historyDeals) {
             String tmpTime = deal.getOrder().getFinishTime().substring(5, 10);
             if (!tmpTime.equals(historyDealData.time)) {
                 historyDealDatas.add(historyDealData);
@@ -151,7 +198,7 @@ public class OrderController {
 
     @RequestMapping("/getHistoryDealById")
     public DealDetail getHistoryDealById(String orderId) {
-        Deal deal =  dealService.selectHistoryDealById(orderId);
+        Deal deal = dealService.selectHistoryDealById(orderId);
         return new DealDetail(deal);
     }
 }

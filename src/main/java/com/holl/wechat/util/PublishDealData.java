@@ -10,6 +10,7 @@ public class PublishDealData {
     public String url;
     public String idurl;
     public String idname;
+    public String phone;
     public float price;
 
     public PublishDealData(int id, Deal deal) {
@@ -20,6 +21,7 @@ public class PublishDealData {
         this.idurl = deal.getFrom().getAvatarUrl();
         this.url = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1856756895,1265182977&fm=26&gp=0.jpg";
         this.idname = deal.getFrom().getName();
+        this.phone = deal.getOrder().getPhone();
         this.price = deal.getOrder().getMoney();
     }
 }

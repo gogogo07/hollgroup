@@ -17,7 +17,7 @@ public interface OrderMapper {
 
     int publishOrder(Order order);
 
-    int startOrder(@Param("id") Long id, @Param("startTime") String startTime);
+    int startOrder(Long id, String startTime);
 
     int deleteOrder(Long id);
 

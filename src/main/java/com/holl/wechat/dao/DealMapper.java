@@ -12,6 +12,8 @@ public interface DealMapper {
 
     List<Deal> selectPublishedDeal();          //查找所有发布但还没有接单的任务
 
+    List<Deal> selectPublishedDealByType(String type);   //通过订单的种类来查找发布的订单
+
     List<Deal> selectMyPublishedDealWithoutAccept(String from_id); //查找我发布的但是还没有人接单的订单
 
     List<Deal> selectMyPublishedDeal(String from_id);   //查找我发布的有人接单的订单
