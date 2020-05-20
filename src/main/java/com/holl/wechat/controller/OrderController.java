@@ -179,6 +179,9 @@ public class OrderController {
     @RequestMapping("getHistoryOrder")
     public List<HistoryDealData> getHistoryOrder(String userId) {
         List<Deal> historyDeals = dealService.selectHistoryDeal(userId);
+        if (historyDeals.size() == 0) {
+            return null;
+        }
         List<HistoryDealData> historyDealDatas = new ArrayList<>();
         int i = 0;
         String time = historyDeals.get(0).getOrder().getFinishTime().substring(5, 10);
