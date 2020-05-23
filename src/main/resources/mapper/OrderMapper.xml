@@ -13,7 +13,6 @@
         <result column="o_title" property="title"/>
         <result column="detail" property="detail"/>
         <result column="phone" property="phone"/>
-        <result column="picture" property="picture"/>
     </resultMap>
 
     <select id="selectAll" resultMap="orderResultMap">
@@ -32,8 +31,8 @@
 
     <insert id="publishOrder" parameterType="com.holl.wechat.model.Order" flushCache="true">
         insert into orders
-        (o_id, finish_time, location, money, publish_time, o_type, start_time, o_title, detail, phone, picture)
-        select #{id}, #{finishTime}, #{location}, #{money}, #{publishTime}, #{type}, #{startTime}, #{title}, #{detail}, #{phone}, #{picture}
+        (o_id, finish_time, location, money, publish_time, o_type, start_time, o_title, detail, phone)
+        select #{id}, #{finishTime}, #{location}, #{money}, #{publishTime}, #{type}, #{startTime}, #{title}, #{detail}, #{phone}
         from dual where not exists (select * from orders o where o.o_id = #{id})
     </insert>
 

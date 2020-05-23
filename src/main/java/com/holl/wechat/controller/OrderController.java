@@ -2,8 +2,10 @@ package com.holl.wechat.controller;
 
 import com.holl.wechat.Global;
 import com.holl.wechat.model.Deal;
+import com.holl.wechat.model.Image;
 import com.holl.wechat.model.Order;
 import com.holl.wechat.service.DealService;
+import com.holl.wechat.service.ImageService;
 import com.holl.wechat.service.OrderService;
 import com.holl.wechat.util.HistoryDealData;
 import com.holl.wechat.util.DealDetail;
@@ -26,9 +28,13 @@ public class OrderController {
     @Autowired
     private DealService dealService;
 
+    @Autowired
+    private ImageService imageService;
+
+    //提交订单
     @RequestMapping("/submit")
     public Map<String, Object> submit(String openid, String title, String price, String type, String location,
-            String detail, String phone, String picture) {
+            String detail, String phone) {
         Global.lock.lock();
         Order order = new Order();
         order.setId(orderService.getMaxId() + 1);
@@ -39,7 +45,6 @@ public class OrderController {
         order.setLocation(location);
         order.setDetail(detail);
         order.setPhone(phone);
-        order.setPicture(picture);
         order.setPublishTime(new Timestamp(System.currentTimeMillis()).toString().substring(0, 19));
 
         Deal deal = new Deal();
@@ -50,6 +55,7 @@ public class OrderController {
         if (orderService.publishOrder(order) == 1) {
             if (dealService.publishDeal(deal) == 1) {
                 map.put("mes", "提交成功");
+                map.put("orderId", order.getId());
             }
         } else {
             map.put("msg", "提交失败");
@@ -68,28 +74,39 @@ public class OrderController {
             case "1":
                 List<PublishDealData> sendOrder = new ArrayList<>();
                 for (Deal deal : dealService.selectPublishedDealByType(myType)) {
-                    sendOrder.add(new PublishDealData(i++, deal));
-                }
+                    List<Image> images = imageService.getImagesById(String.valueOf(deal.getOrderId()));
+                    if (images.size() > 0) {
+                        String url = images.get(0).getImageName();
+                        sendOrder.add(new PublishDealData(i++, deal, url));
+                    } else {
+                        sendOrder.add(new PublishDealData(i++, deal, "0000.jpg"));
+                    }
+                }            
                 orders.put("sendOrder", sendOrder);
                 break;
             case "2":
                 List<PublishDealData> questionOrder = new ArrayList<>();
                 for (Deal deal : dealService.selectPublishedDealByType(myType)) {
-                    questionOrder.add(new PublishDealData(i++, deal));
+                    List<Image> images = imageService.getImagesById(String.valueOf(deal.getOrderId()));
+                    if (images.size() > 0) {
+                        String url = images.get(0).getImageName();
+                        questionOrder.add(new PublishDealData(i++, deal, url));
+                    } else {
+                        questionOrder.add(new PublishDealData(i++, deal, "0000.jpg"));
+                    }
                 }
                 orders.put("questionOrder", questionOrder);
-                break;
-            case "3":
-                List<PublishDealData> marketOrder = new ArrayList<>();
-                for (Deal deal : dealService.selectPublishedDealByType(myType)) {
-                    marketOrder.add(new PublishDealData(i++, deal));
-                }
-                orders.put("marketOrder", marketOrder);
                 break;
             case "4":
                 List<PublishDealData> otherOrder = new ArrayList<>();
                 for (Deal deal : dealService.selectPublishedDealByType(myType)) {
-                    otherOrder.add(new PublishDealData(i++, deal));
+                    List<Image> images = imageService.getImagesById(String.valueOf(deal.getOrderId()));
+                    if (images.size() > 0) {
+                        String url = images.get(0).getImageName();
+                        otherOrder.add(new PublishDealData(i++, deal, url));
+                    } else {
+                        otherOrder.add(new PublishDealData(i++, deal, "0000.jpg"));
+                    }
                 }
                 orders.put("otherOrder", otherOrder);
                 break;
@@ -103,7 +120,8 @@ public class OrderController {
     @RequestMapping("/getDealById")
     public DealDetail selectDealById(String orderId) {
         Deal deal = dealService.selectDealById(orderId);
-        return new DealDetail(deal);
+        List<Image> images = imageService.getImagesById(String.valueOf(orderId));
+        return new DealDetail(deal, images);
     }
 
     // 查找用户id的用户发布的但是还未完成的所有订单
@@ -125,10 +143,10 @@ public class OrderController {
         List<DealDetail> publishOrder = new ArrayList<>();
         List<DealDetail> acceptOrder = new ArrayList<>();
         for (Deal deal: getMyPublishedOrder(id)) {
-            publishOrder.add(new DealDetail(deal));
+            publishOrder.add(new DealDetail(deal, imageService.getImagesById(String.valueOf(deal.getOrderId()))));
         }
         for (Deal deal: getMyAcceptDeal(id)) {
-            acceptOrder.add(new DealDetail(deal));
+            acceptOrder.add(new DealDetail(deal, imageService.getImagesById(String.valueOf(deal.getOrderId()))));
         }
         orders.put("publishOrder", publishOrder);
         orders.put("acceptOrder", acceptOrder);
@@ -154,6 +172,7 @@ public class OrderController {
         return map;
     }
 
+    //完成订单
     @RequestMapping("/finish")
     public Map<String, Object> finishOrder(String orderId) {
         Global.lock.lock();
@@ -176,6 +195,7 @@ public class OrderController {
         return map;
     }
 
+    //获取历史订单
     @RequestMapping("getHistoryOrder")
     public List<HistoryDealData> getHistoryOrder(String userId) {
         List<Deal> historyDeals = dealService.selectHistoryDeal(userId);
@@ -199,9 +219,10 @@ public class OrderController {
         return historyDealDatas;
     }
 
+    //查看历史订单的详细信息
     @RequestMapping("/getHistoryDealById")
     public DealDetail getHistoryDealById(String orderId) {
         Deal deal = dealService.selectHistoryDealById(orderId);
-        return new DealDetail(deal);
+        return new DealDetail(deal, imageService.getImagesById(String.valueOf(deal.getOrderId())));
     }
 }

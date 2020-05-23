@@ -16,8 +16,6 @@ public class Order {
 
     private String phone;
 
-    private String picture;
-
     private String publishTime;
 
     private String startTime;
@@ -120,26 +118,12 @@ public class Order {
         this.phone = phone;
     }
 
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
     @Override
     public String toString() {
-        return "Order{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", detail='" + detail + '\'' +
-                ", location='" + location + '\'' +
-                ", money=" + money +
-                ", type='" + type + '\'' +
-                ", publishTime='" + publishTime + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", finishTime='" + finishTime + '\'' +
-                '}';
+        return "Order [detail=" + detail + ", finishTime=" + finishTime + ", id=" + id + ", location=" + location
+                + ", money=" + money + ", phone=" + phone + ", publishTime=" + publishTime + ", startTime=" + startTime
+                + ", title=" + title + ", type=" + type + "]";
     }
+
+    
 }
