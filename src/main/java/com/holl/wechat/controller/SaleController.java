@@ -1,11 +1,17 @@
 package com.holl.wechat.controller;
 
+import com.holl.wechat.model.Deal;
 import com.holl.wechat.model.Sale;
 import com.holl.wechat.service.SaleService;
+import com.holl.wechat.util.DealDetail;
+import com.holl.wechat.util.PublishDealData;
+import com.holl.wechat.util.SaleData;
+import com.holl.wechat.util.SaleDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +24,15 @@ public class SaleController {
     private SaleService saleService;
 
     @RequestMapping("/findAll")
-    public List<Sale> findAll() {
-        return saleService.findAll();
+    public Map<String, List<SaleData>> findAll() {
+        Map<String, List<SaleData>> orders = new HashMap<>();
+        List<SaleData> marketOrder = new ArrayList<>();
+        int i=0;
+        for (Sale sale : saleService.findAll()) {
+            marketOrder.add(new SaleData(i++, sale));
+        }
+        orders.put("marketOrder", marketOrder);
+        return orders;
     }
 
     @RequestMapping("/publish")  //TODO：idnumber要自增
@@ -27,6 +40,9 @@ public class SaleController {
         //Global.lock.lock();
 
         //long idNumber=10000;
+
+        System.out.println("openId:"+ openId);
+
 
         Sale sale = new Sale();
         //sale.setId(idNumber);
@@ -83,8 +99,16 @@ public class SaleController {
 
     @RequestMapping("/findSaleByOpenId")
     public List<Sale> findSaleByOpenId(String openId) {
-        System.out.println(openId);
         return saleService.findSaleByOpenId(openId);
+    }
+
+    @RequestMapping("/findSaleByOrderId")
+    public SaleDetail findSaleByOrderId(long id) {
+        Sale sale = saleService.findSaleByOrderId(id);
+        return new SaleDetail(sale);
+
+
+        //return saleService.findSaleByOrderId(id);
     }
     
 }

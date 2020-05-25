@@ -18,4 +18,6 @@ public interface SaleMapper {
 
     List<Sale> findSaleByOpenId(String openId);
 
+    Sale findSaleByOrderId(long id);
+
 }

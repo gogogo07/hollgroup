@@ -37,4 +37,9 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<Sale> findSaleByOpenId(String openId){ return saleMapper.findSaleByOpenId(openId); }
 
+    @Override
+    public Sale findSaleByOrderId(long id){
+        return saleMapper.findSaleByOrderId(id);
+    }
+
 }

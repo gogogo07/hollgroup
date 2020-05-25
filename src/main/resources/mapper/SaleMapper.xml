@@ -11,6 +11,7 @@
         <result column="money" property="money"/>
         <result column="u_name" property="user.name"/>
         <result column="phone" property="phone"/>
+        <result column="avatar_url" property="user.avatarUrl"/>
     </resultMap>
 
 
@@ -23,7 +24,8 @@
             picture,
             money,
             u_name,
-            phone
+            phone,
+            avatar_url
         FROM
             sales,
             users
@@ -33,7 +35,6 @@
 
     <insert id="publishSale" parameterType="com.holl.wechat.model.Sale">
         INSERT INTO sales (
-            id,
             open_id,
             title,
             detail,
@@ -42,7 +43,7 @@
             phone
         )
         VALUES
-	    (#{id}, #{openId}, #{title}, #{detail}, #{picture}, #{money})
+	    (#{openId}, #{title}, #{detail}, #{picture}, #{money}, #{phone})
     </insert>
 
     <update id="updateSale" parameterType="com.holl.wechat.model.Sale">
@@ -69,12 +70,31 @@
             picture,
             money,
             u_name,
-            phone
+            phone,
+            avatar_url
         FROM
             sales,
             users
         WHERE
             sales.open_id = users.u_id and open_id = #{openId}
+    </select>
+
+    <select id="findSaleByOrderId" parameterType="java.lang.Long" resultMap="userResultMap">
+        SELECT
+            id,
+            open_id,
+            title,
+            detail,
+            picture,
+            money,
+            u_name,
+            phone,
+            avatar_url
+        FROM
+            sales,
+            users
+        WHERE
+            sales.open_id = users.u_id and id = #{id}
     </select>
 
 </mapper>

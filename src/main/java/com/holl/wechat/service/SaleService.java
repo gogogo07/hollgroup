@@ -16,4 +16,5 @@ public interface SaleService {
 
     List<Sale> findSaleByOpenId(String openId);
 
+    Sale findSaleByOrderId(long id);
 }
