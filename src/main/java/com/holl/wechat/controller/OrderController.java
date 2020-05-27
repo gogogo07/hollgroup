@@ -11,6 +11,7 @@ import com.holl.wechat.util.HistoryDealData;
 import com.holl.wechat.util.DealDetail;
 import com.holl.wechat.util.PublishDealData;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-
+    private static  final Logger LOGGER = Logger.getLogger(OrderController.class);
     @Autowired
     private OrderService orderService;
 
@@ -67,6 +68,7 @@ public class OrderController {
     // 查找所有发布了的但是没有人接单的订单
     @RequestMapping("/freshByType")
     public Map<String, List<PublishDealData>> fresh(int type) {
+        LOGGER.debug("/fresh?type="+type);
         Map<String, List<PublishDealData>> orders = new HashMap<>();
         int i = 0;
         String myType = String.valueOf(type + 1);

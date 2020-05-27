@@ -15,16 +15,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 @RestController
 @RequestMapping("/sale")
 public class SaleController {
 
+    private static  final Logger LOGGER = Logger.getLogger(SaleController.class);
     @Autowired
     private SaleService saleService;
 
     @RequestMapping("/findAll")
     public Map<String, List<SaleData>> findAll() {
+        LOGGER.debug("sale/findAll");
         Map<String, List<SaleData>> orders = new HashMap<>();
         List<SaleData> marketOrder = new ArrayList<>();
         int i=0;
