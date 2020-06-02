@@ -3,7 +3,6 @@ package com.holl.wechat.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,6 +10,8 @@ import com.holl.wechat.model.Image;
 import com.holl.wechat.service.ImageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +26,8 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
-    private final String path = "C:\\Users\\ouyuj\\Desktop\\tmp\\接收的图片\\";
+    @Value("${image.upload.path}")
+    private String path;
 
     @RequestMapping("upload")
     public String upload(HttpServletRequest request, String orderId, MultipartFile file) {
@@ -37,6 +39,7 @@ public class ImageController {
                 Image image = new Image(Long.valueOf(orderId), fileName);
                 imageService.insertImage(image);
                 String realPath = path + fileName;
+                System.out.println(realPath);
                 file.transferTo(new File(realPath));
                 return "上传成功";
             } else {
@@ -54,6 +57,7 @@ public class ImageController {
     public byte[] download(String fileName) {
         String filePath = path + fileName;
         File file = new File(filePath);
+        System.out.println(filePath);
         try{
             FileInputStream inputStream = new FileInputStream(file);
             byte[] bytes = new byte[inputStream.available()];

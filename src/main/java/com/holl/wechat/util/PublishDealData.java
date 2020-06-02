@@ -1,9 +1,6 @@
 package com.holl.wechat.util;
 
 import com.holl.wechat.model.Deal;
-import com.holl.wechat.service.ImageService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class PublishDealData {
     public int id;
