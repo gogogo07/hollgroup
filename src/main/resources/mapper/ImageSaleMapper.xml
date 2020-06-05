@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.holl.wechat.dao.ImageSaleMapper">
+
+    <resultMap id="imageResultmap" type="com.holl.wechat.model.Image">
+        <result column="o_id" property="orderId"/>
+        <result column="img_name" property="imageName"/>
+    </resultMap>
+
+    <insert id="insertImage" parameterType="com.holl.wechat.model.Image">
+        INSERT INTO images_sale (o_id, img_name)
+        VALUES
+	        (#{orderId}, #{imageName})
+    </insert>
+
+    <select id="getCount" resultType="Long">
+        select count(*) from images_sale
+    </select>
+
+
+    <select id="getImagesById" resultMap="imageResultmap">
+        SELECT
+            o_id,
+            img_name
+        FROM
+            images_sale
+        WHERE
+            o_id = #{orderId}
+    </select>
+
+    <update id="clearImage" parameterType="String">
+        UPDATE images_sale
+        SET o_id =- 1
+        WHERE
+            o_id = #{id}
+    </update>
+
+</mapper>

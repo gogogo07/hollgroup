@@ -7,7 +7,6 @@
         <result column="open_id" property="openId"/>
         <result column="title" property="title"/>
         <result column="detail" property="detail"/>
-        <result column="picture" property="picture"/>
         <result column="money" property="money"/>
         <result column="u_name" property="user.name"/>
         <result column="phone" property="phone"/>
@@ -21,7 +20,6 @@
             open_id,
             title,
             detail,
-            picture,
             money,
             u_name,
             phone,
@@ -38,28 +36,27 @@
             open_id,
             title,
             detail,
-            picture,
             money,
             phone
         )
         VALUES
-	    (#{openId}, #{title}, #{detail}, #{picture}, #{money}, #{phone})
+	    (#{openId}, #{title}, #{detail}, #{money}, #{phone})
     </insert>
 
     <update id="updateSale" parameterType="com.holl.wechat.model.Sale">
         UPDATE sales
-        SET title = #{title}, detail = #{detail}, picture = #{picture}, money = #{money}, phone = #{phone}
+        SET title = #{title}, detail = #{detail}, money = #{money}, phone = #{phone}
         WHERE
 	        id = #{id}
     </update>
 
-    <update id="cancelSale" parameterType="com.holl.wechat.model.Sale">
+    <delete id="cancelSale" parameterType="com.holl.wechat.model.Sale">
         DELETE
         FROM
 	        sales
         WHERE
 	        id = #{id}
-    </update>
+    </delete>
 
     <select id="findSaleByOpenId" parameterType="java.lang.String" resultMap="userResultMap">
         SELECT
@@ -67,7 +64,6 @@
             open_id,
             title,
             detail,
-            picture,
             money,
             u_name,
             phone,
@@ -85,7 +81,6 @@
             open_id,
             title,
             detail,
-            picture,
             money,
             u_name,
             phone,
