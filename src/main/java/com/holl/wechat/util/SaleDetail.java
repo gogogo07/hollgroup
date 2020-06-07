@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaleDetail {
-    private final String baseUrl = "http://localhost:3434/sale/download?fileName=";
+    private final String baseUrl = "http://182.92.105.48:3434/sale/download?fileName=";
     public String title;
     public String url;
     public String idname;

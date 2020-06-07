@@ -19,7 +19,7 @@ public class SaleData {
         this.type = "3";
         this.title = sale.getTitle();
         this.idurl = sale.getUser().getAvatarUrl();
-        this.url = "http://localhost:3434/sale/download?fileName=" + url;
+        this.url = "http://182.92.105.48:3434/sale/download?fileName=" + url;
         this.idname = sale.getUser().getName();
         this.phone = sale.getPhone();
         this.price = sale.getMoney();
