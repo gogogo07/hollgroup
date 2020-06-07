@@ -13,20 +13,17 @@ public class Sale {
 
     private String detail = null;
 
-    private String picture = null;
-
     private float money = 0;
 
     private String phone = null;
 
     public Sale(){  }
 
-    public Sale(long id, String openId, String title, String detail, String picture, float money,String phone){
+    public Sale(long id, String openId, String title, String detail, float money,String phone){
         this.id = id;
         this.openId = openId;
         this.title = title;
         this.detail = detail;
-        this.picture = picture;
         this.money = money;
         this.phone = phone;
     }
@@ -46,10 +43,6 @@ public class Sale {
     public void setDetail(String detail){ this.detail = detail; }
 
     public String getDetail(){ return detail; }
-
-    public void setPicture(String picture){ this.picture = picture; }
-
-    public String getPicture(){ return picture; }
 
     public void setMoney(float money){ this.money = money; }
 
@@ -71,7 +64,6 @@ public class Sale {
                 ", openId='" + openId + '\'' +
                 ", title='" + title + '\'' +
                 ", detail=" + detail +
-                ", picture=" + picture +
                 ", money='" + money + '\'' +
                 ", phone='" + phone + '\'' +
                 '}';
