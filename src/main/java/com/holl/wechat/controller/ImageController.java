@@ -11,7 +11,6 @@ import com.holl.wechat.service.ImageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,11 +22,23 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/image")
 public class ImageController {
 
+    
     @Autowired
     private ImageService imageService;
 
     @Value("${image.upload.path}")
     private String path;
+
+    //
+    @RequestMapping("setImage")
+    public String setImage(String orderId, String imageName) {
+        Image image = new Image(Long.valueOf(orderId), imageName);
+        if (imageService.insertImage(image) != 0) {
+            return "上传成功";
+        } else {
+            return "上传失败";
+        }
+    }
 
     @RequestMapping("upload")
     public String upload(HttpServletRequest request, String orderId, MultipartFile file) {
