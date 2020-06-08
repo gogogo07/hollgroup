@@ -10,7 +10,7 @@ public interface SaleMapper {
 
     List<Sale> findAll();
 
-    void publishSale(Sale sale);
+    long publishSale(Sale sale);
 
     void updateSale(Sale sale);
 

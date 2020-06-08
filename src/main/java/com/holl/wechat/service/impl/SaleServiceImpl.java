@@ -20,9 +20,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public void publishSale(Sale sale){
-        saleMapper.publishSale(sale);
-    }
+    public void publishSale(Sale sale){ saleMapper.publishSale(sale); }
 
     @Override
     public void updateSale(Sale sale){

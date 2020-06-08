@@ -77,7 +77,9 @@ public class SaleController {
         Map map=new HashMap();
         saleService.publishSale(sale);
         map.put("msg","提交成功");
-
+        long id = sale.getId();
+        map.put("orderId",id);
+        System.out.println("id:"+id);
 
 
         //Global.lock.unlock();
