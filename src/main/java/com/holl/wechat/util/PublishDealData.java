@@ -19,7 +19,7 @@ public class PublishDealData {
         this.type = deal.getOrder().getType();
         this.title = deal.getOrder().getTitle();
         this.idurl = deal.getFrom().getAvatarUrl();
-        this.url = "http://182.92.105.48:3434/image/download?fileName=" + url; 
+        this.url = "https://knight.ren/image/download?fileName=" + url; 
         this.idname = deal.getFrom().getName();
         this.phone = deal.getOrder().getPhone();
         this.price = deal.getOrder().getMoney();

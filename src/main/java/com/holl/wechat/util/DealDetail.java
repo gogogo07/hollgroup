@@ -8,7 +8,7 @@ import com.holl.wechat.model.Image;
 
 public class DealDetail {
 
-    private final String baseUrl = "http://182.92.105.48:3434/image/download?fileName=";
+    private final String baseUrl = "https://knight.ren/image/download?fileName=";
 
     public String title;
     public String detail;
