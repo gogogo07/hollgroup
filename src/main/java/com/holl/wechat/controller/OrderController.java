@@ -36,6 +36,7 @@ public class OrderController {
     @RequestMapping("/submit")
     public Map<String, Object> submit(String openid, String title, String price, String type, String location,
             String detail, String phone) {
+        LOGGER.debug("/order/submit?openid="+openid+"&title="+title+"&price="+price+"&type="+type+"&location="+location+"&detail="+detail+"&phone="+phone);
         Global.lock.lock();
         Order order = new Order();
         order.setId(orderService.getMaxId() + 1);
@@ -68,7 +69,7 @@ public class OrderController {
     // 查找所有发布了的但是没有人接单的订单
     @RequestMapping("/freshByType")
     public Map<String, List<PublishDealData>> fresh(int type) {
-        LOGGER.debug("/fresh?type="+type);
+        LOGGER.debug("/order/fresh?type="+type);
         Map<String, List<PublishDealData>> orders = new HashMap<>();
         int i = 0;
         String myType = String.valueOf(type + 1);
@@ -121,6 +122,7 @@ public class OrderController {
     //通过订单id查找订单的详细信息
     @RequestMapping("/getDealById")
     public DealDetail selectDealById(String orderId) {
+        LOGGER.debug("/order/getDealById?orderId="+orderId);
         Deal deal = dealService.selectDealById(orderId);
         List<Image> images = imageService.getImagesById(String.valueOf(orderId));
         return new DealDetail(deal, images);
@@ -129,18 +131,21 @@ public class OrderController {
     // 查找用户id的用户发布的但是还未完成的所有订单
     @RequestMapping("/getMyPublishedOrder")
     public List<Deal> getMyPublishedOrder(String fromId) {
+        LOGGER.debug("/order/getMyPublishedOrder?fromId="+fromId);
         return dealService.selectMyPublishedDeal(fromId);
     }    
 
     // 查找用户为id的用户已经接受的但是还没完成的订单
     @RequestMapping("/getMyAcceptDeal")
     public List<Deal> getMyAcceptDeal(String toId) {
+        LOGGER.debug("/order/getMyAcceptDeal?toId="+toId);
         return dealService.selectMyAcceptDeal(toId);
     }
 
     //查找用户发布的和接受的未完成的订单
     @RequestMapping("/getOrderInfo")
     public Map<String, List<DealDetail>> getOrderInfo(String id) {
+        LOGGER.debug("/order/getOrderInfo?id="+id);
         Map<String, List<DealDetail>> orders = new HashMap<>();
         List<DealDetail> publishOrder = new ArrayList<>();
         List<DealDetail> acceptOrder = new ArrayList<>();
@@ -158,6 +163,7 @@ public class OrderController {
     // 接单
     @RequestMapping("/start")
     public Map<String, Object> acceptOrder(String orderId, String openId) {
+        LOGGER.debug("/order/start?orderId="+orderId+"&openId="+openId);
         Global.lock.lock();
         Map<String, Object> map = new HashMap<>();
         Long myOrderId = Long.parseLong(orderId);
@@ -177,6 +183,7 @@ public class OrderController {
     //完成订单
     @RequestMapping("/finish")
     public Map<String, Object> finishOrder(String orderId) {
+        LOGGER.debug("/order/finish?finishOrder="+orderId);
         Global.lock.lock();
         Map<String, Object> map = new HashMap<>();
         Long myOrderId = Long.parseLong(orderId);
@@ -200,6 +207,7 @@ public class OrderController {
     //获取历史订单
     @RequestMapping("getHistoryOrder")
     public List<HistoryDealData> getHistoryOrder(String userId) {
+        LOGGER.debug("/order/getHistoryOrder?userId="+userId);
         List<Deal> historyDeals = dealService.selectHistoryDeal(userId);
         if (historyDeals.size() == 0) {
             return null;
@@ -224,6 +232,7 @@ public class OrderController {
     //查看历史订单的详细信息
     @RequestMapping("/getHistoryDealById")
     public DealDetail getHistoryDealById(String orderId) {
+        LOGGER.debug("/order/getHistoryDealById?orderId="+orderId);
         Deal deal = dealService.selectHistoryDealById(orderId);
         return new DealDetail(deal, imageService.getImagesById(String.valueOf(deal.getOrderId())));
     }
