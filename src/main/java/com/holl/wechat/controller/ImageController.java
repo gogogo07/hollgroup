@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 
 @RestController
 @RequestMapping("/image")
@@ -44,14 +46,24 @@ public class ImageController {
     public String upload(HttpServletRequest request, String orderId, MultipartFile file) {
         try {
             request.setCharacterEncoding("utf-8");
+            MultipartFile oldMultipartFile = file;
             if (!file.isEmpty()) {
                 System.out.println(orderId);
                 String fileName = String.valueOf(imageService.getCount() + 10000) + ".jpg";
                 Image image = new Image(Long.valueOf(orderId), fileName);
                 imageService.insertImage(image);
                 String realPath = path + fileName;
-                System.out.println(realPath);
-                file.transferTo(new File(realPath));
+                try{
+                    System.out.println(realPath);
+                    Thumbnails.of(file.getInputStream())
+                    .scale(1f)
+                    .outputQuality(0.2f)
+                    .outputFormat("jpg")
+                    .toFile(realPath);
+                } catch (IOException e) {
+                    oldMultipartFile.transferTo(new File(realPath));
+                }
+                
                 return "上传成功";
             } else {
                 System.out.println("文件为空");

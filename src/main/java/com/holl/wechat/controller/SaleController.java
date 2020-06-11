@@ -27,6 +27,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -144,6 +146,7 @@ public class SaleController {
     public String upload(HttpServletRequest request, String orderId, MultipartFile file) {
         try {
             request.setCharacterEncoding("utf-8");
+            MultipartFile oldMultipartFile = file;
             if (!file.isEmpty()) {
                 System.out.println(orderId);
                 String fileName = "s" + String.valueOf(imageSaleService.getCount() + 10000) + ".jpg";
@@ -151,7 +154,17 @@ public class SaleController {
                 imageSaleService.insertImage(image);
                 String realPath = path + fileName;
                 System.out.println(realPath);
-                file.transferTo(new File(realPath));
+                try{
+                    System.out.println(realPath);
+                    Thumbnails.of(file.getInputStream())
+                    .scale(1f)
+                    .outputQuality(0.2f)
+                    .outputFormat("jpg")
+                    .toFile(realPath);
+                } catch (IOException e) {
+                    oldMultipartFile.transferTo(new File(realPath));
+                }
+                
                 return "上传成功";
             } else {
                 System.out.println("文件为空");
