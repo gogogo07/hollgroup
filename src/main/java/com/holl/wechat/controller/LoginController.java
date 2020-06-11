@@ -20,11 +20,14 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.log4j.Logger;
 
 
 @RestController
 @RequestMapping("/user")
 public class LoginController {
+
+    private static  final Logger LOGGER = Logger.getLogger(OrderController.class);
 
     @Autowired
     private UserService userService;
@@ -86,6 +89,7 @@ public class LoginController {
 
     @RequestMapping(value="/login")
     public Map<String, Object> login(String code, String iv, String encryptedData) {
+        LOGGER.debug("/user/login?code="+code+"&iv="+iv+"&encryptedData="+encryptedData);
 
         Map<String, Object> map = new HashMap<>();
         //登录凭证不能为空
@@ -128,11 +132,13 @@ public class LoginController {
 
     @RequestMapping("/getall")
     public List<User> getAllUser() {
+        LOGGER.debug("/user/getall");
         return userService.findAll();
     }
 
     @RequestMapping("/getUserById")
     public User getUserById(String id) {
+        LOGGER.debug("/user/getUserById?id="+id);
         return userService.findUserById(id);
     }
 

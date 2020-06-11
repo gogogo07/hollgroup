@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.holl.wechat.model.Image;
 import com.holl.wechat.service.ImageService;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -21,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/image")
 public class ImageController {
-
+    private static  final Logger LOGGER = Logger.getLogger(OrderController.class);
     
     @Autowired
     private ImageService imageService;
@@ -32,6 +33,7 @@ public class ImageController {
     //
     @RequestMapping("setImage")
     public String setImage(String orderId, String imageName) {
+        LOGGER.debug("image/setImage?orderId="+orderId+"&imageName="+imageName);
         Image image = new Image(Long.valueOf(orderId), imageName);
         if (imageService.insertImage(image) != 0) {
             return "上传成功";
@@ -42,6 +44,7 @@ public class ImageController {
 
     @RequestMapping("upload")
     public String upload(HttpServletRequest request, String orderId, MultipartFile file) {
+        LOGGER.debug("image/upload?orderId="+orderId);
         try {
             request.setCharacterEncoding("utf-8");
             if (!file.isEmpty()) {
@@ -66,6 +69,7 @@ public class ImageController {
     @ResponseBody
     @RequestMapping(value = "/download", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] download(String fileName) {
+        LOGGER.debug("image/download?fileName="+fileName);
         String filePath = path + fileName;
         File file = new File(filePath);
         System.out.println(filePath);

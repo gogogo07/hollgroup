@@ -59,6 +59,7 @@ public class SaleController {
 
     @RequestMapping("/publish")
     public Map publish(String openId,String title,String detail,float money,String phone) {
+        LOGGER.debug("sale/publish?openId="+openId+"&title="+title+"&detail="+detail+"&money="+money+"&phone="+phone);
         //Global.lock.lock();
 
         //long idNumber=10000;
@@ -89,6 +90,7 @@ public class SaleController {
 
     @RequestMapping("/update")//获取发布者id、标题、描述、图片url、价格
     public Map update(long id,String title,String detail,float money,String phone) {
+        LOGGER.debug("sale/update?id="+id+"&title="+title+"&detail="+detail+"&money="+money+"&phone="+phone);
         //Global.lock.lock();
 
         Sale sale = new Sale();
@@ -109,6 +111,7 @@ public class SaleController {
 
     @RequestMapping("/cancel")
     public Map cancel(long id) {
+        LOGGER.debug("sale/cancel?id="+id);
         //Global.lock.lock();
 
         Map map=new HashMap();
@@ -121,11 +124,13 @@ public class SaleController {
 
     @RequestMapping("/findSaleByOpenId")
     public List<Sale> findSaleByOpenId(String openId) {
+        LOGGER.debug("sale/findSaleByOpenId?openId="+openId);
         return saleService.findSaleByOpenId(openId);
     }
 
     @RequestMapping("/findSaleByOrderId")
     public SaleDetail findSaleByOrderId(long id) {
+        LOGGER.debug("sale/findSaleByOrderId?id="+id);
         Sale sale = saleService.findSaleByOrderId(id);
         List<Image> images = imageSaleService.getImagesById(String.valueOf(sale.getId()));
         return new SaleDetail(sale,images);
@@ -142,6 +147,7 @@ public class SaleController {
 
     @RequestMapping("/upload")
     public String upload(HttpServletRequest request, String orderId, MultipartFile file) {
+        LOGGER.debug("sale/upload?orderId="+orderId);
         try {
             request.setCharacterEncoding("utf-8");
             if (!file.isEmpty()) {
@@ -166,6 +172,7 @@ public class SaleController {
     @ResponseBody
     @RequestMapping(value = "/download", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] download(String fileName) {
+        LOGGER.debug("sale/download?fileName="+fileName);
         String filePath = path + fileName;
         File file = new File(filePath);
         System.out.println(filePath);
@@ -182,6 +189,7 @@ public class SaleController {
 
     @RequestMapping("/updateImage")
     public String updateImage(HttpServletRequest request, String orderId, MultipartFile file) {
+        LOGGER.debug("sale/updateImage?orderId="+orderId);
         imageSaleService.clearImage(orderId);
         upload(request,orderId,file);
         return "图片更新成功";
