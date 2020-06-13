@@ -44,6 +44,16 @@ public class OrderServiceImpl implements OrderService {
             return 0;
         }
     }
+    
+    @Override
+    public int cancelOrder(Long id) {
+        int delete = orderMapper.deleteOrder(id);
+        if (delete == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
     @Override
     public int insertIntoOld(Long id) {

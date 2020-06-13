@@ -81,4 +81,15 @@ public class DealServiceImpl implements DealService {
             return 0;
         }
     }
+
+    @Override
+    public int cancelDeal(String id) {
+        Long my_id = Long.parseLong(id);
+        int delete = dealMapper.deleteDeal(my_id);
+        if (delete == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

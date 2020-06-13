@@ -124,12 +124,6 @@ public class SaleController {
         return map;
     }
 
-    @RequestMapping("/findSaleByOpenId")
-    public List<Sale> findSaleByOpenId(String openId) {
-        LOGGER.debug("sale/findSaleByOpenId?openId="+openId);
-        return saleService.findSaleByOpenId(openId);
-    }
-
     @RequestMapping("/findSaleByOrderId")
     public SaleDetail findSaleByOrderId(long id) {
         LOGGER.debug("sale/findSaleByOrderId?id="+id);
@@ -140,6 +134,28 @@ public class SaleController {
 
         //return saleService.findSaleByOrderId(id);
     }
+
+    @RequestMapping("/findSaleByOpenId")
+    public List<SaleData> findSaleByOpenId(String openId) {
+        LOGGER.debug("sale/findSaleByOpenId?openId="+openId);
+
+        List<SaleData> marketOrder = new ArrayList<>();
+        int i=0;
+        for (Sale sale : saleService.findSaleByOpenId(openId)) {
+            List<Image> images = imageSaleService.getImagesById(String.valueOf(sale.getId()));
+            System.out.println(String.valueOf(sale.getId()));
+            if (images.size() > 0) {
+                String url = images.get(0).getImageName();
+                marketOrder.add(new SaleData(i++, sale, url));
+            } else {
+                marketOrder.add(new SaleData(i++, sale, "404.jpg"));
+            }
+        }
+
+        return marketOrder;
+
+    }
+
 
     @Autowired
     private ImageSaleService imageSaleService;

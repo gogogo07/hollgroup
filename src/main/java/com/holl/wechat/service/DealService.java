@@ -27,4 +27,6 @@ public interface DealService {
     int startDeal(Long orderId, String openId);
 
     int finishDeal(String id);
+
+    int cancelDeal(String id);
 }

@@ -180,6 +180,28 @@ public class OrderController {
         return map;
     }
 
+    //取消订单
+    @RequestMapping("/cancel")
+    public Map<String, Object> cancelOrder(String orderId) {
+        LOGGER.debug("order/cancel?cancelOrder=" + orderId);
+        Global.lock.lock();
+
+        Map<String, Object> map = new HashMap<>();
+        Long myOrderId = Long.parseLong(orderId);
+        if (dealService.cancelDeal(orderId) == 1) {
+            if (orderService.cancelOrder(myOrderId) == 1) {
+                map.put("msg", "取消成功");
+            } else {
+                map.put("msg", "取消order失败");
+            }
+        } else {
+            map.put("msg", "取消deal失败");
+        }
+
+        Global.lock.unlock();
+        return map;
+    }
+
     //完成订单
     @RequestMapping("/finish")
     public Map<String, Object> finishOrder(String orderId) {

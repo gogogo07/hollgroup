@@ -16,6 +16,8 @@ public interface OrderService {
 
     int finishOrder(Long id);
 
+    int cancelOrder(Long id);
+
     int insertIntoOld(Long id);
 
     Long getMaxId();
