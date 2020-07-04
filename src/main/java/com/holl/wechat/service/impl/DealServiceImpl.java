@@ -4,6 +4,7 @@ import com.holl.wechat.dao.DealMapper;
 import com.holl.wechat.model.Deal;
 import com.holl.wechat.service.DealService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class DealServiceImpl implements DealService {
     @Autowired
     DealMapper dealMapper;
 
+    @Cacheable(value = "deal", key = "all")
     @Override
     public List<Deal> selectAll() {
         return dealMapper.selectAll();

@@ -105,7 +105,7 @@ public class LoginController {
         try {
             String jsonData = AesCbcUtil.decrypt(encryptedData, sessionKey, iv, "utf-8");
             if (jsonData != null && jsonData.length() > 0) {
-                Map<String, Object> userInfoJson = mapper.readValue(jsonData, Map.class);
+                Map userInfoJson = mapper.readValue(jsonData, Map.class);
                 User user = new User();
                 user.setCredit(0L);
                 user.setId(userInfoJson.get("openId").toString());

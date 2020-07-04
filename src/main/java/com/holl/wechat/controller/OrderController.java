@@ -133,7 +133,7 @@ public class OrderController {
     public List<Deal> getMyPublishedOrder(String fromId) {
         LOGGER.debug("/order/getMyPublishedOrder?fromId="+fromId);
         return dealService.selectMyPublishedDeal(fromId);
-    }    
+    }
 
     // 查找用户为id的用户已经接受的但是还没完成的订单
     @RequestMapping("/getMyAcceptDeal")

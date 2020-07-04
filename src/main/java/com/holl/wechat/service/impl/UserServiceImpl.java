@@ -4,6 +4,7 @@ import com.holl.wechat.dao.UserMapper;
 import com.holl.wechat.model.User;
 import com.holl.wechat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectAll();
     }
 
+    @Cacheable(value = "user", key = "#id")
     @Override
     public User findUserById(String id) {
         return userMapper.selectUserById(id);
